@@ -2,15 +2,22 @@ import Product from "../models/product.schema.js"
 
 // create Product -- admin
 export const createProduct = async (req,res,next) => {
-
+   try {
     const product = await Product.create(req.body);
 
     res.status(200).json({
        sucess: true,
        message: "Product created successfully",
        product
-    })
+    });
 
+} catch (error) {
+   console.log(error);
+   res.status(400).json({
+     success: false,
+     message: error.message,
+   });
+ }
 }
 
 // get all product
