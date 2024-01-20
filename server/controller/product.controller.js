@@ -23,15 +23,34 @@ export const createProduct = async (req,res,next) => {
 // get all product
 
 export const getAllProducts = async (req,res) => {
+   try {
+      const { name } = req.body
+      // const { name } = req.query;
+      // const queryObject = {};
 
-     const products = await Product.find();
+      // if (name) {
+      //    queryObject.name = { $regex: name, $options: "i" };
+      // }
+     const products = await Product.find({
+      name: { $regex: name, $options: "i" },
+     });
+  
 
      res.status(200).json({
         sucess: true,
         products
      })
+   } catch (error) {
+      console.log(error);
+      res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
 
 }
+
+// get Search
 
 // get product details
 
