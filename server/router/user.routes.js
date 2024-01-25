@@ -2,21 +2,22 @@ import express from 'express';
 const router = express.Router();
 import {
   
-  //  createProduct,
-  // getUsers,
-  // deleteUser,
-  // editUser,
-  registerUser
-  // getUsersById
+  registerUser,
+  loginUser,
+  logout,
+  forgotPassword,
+  resetPassword
+ 
 } from "../controller/user.controller.js";
 
 
 
-// router.get("/", home)
+
 router.post("/registerUser", registerUser);
-// router.get("/getUsers", getUsers);
-// router.get("/getUsersById/:id", getUsersById)
-// router.put("/editUser/:id", editUser);
-// router.delete("/deleteUser/:id", deleteUser);
+router.post("/loginUser", loginUser);
+router.get("/logout", logout);
+router.post("/forgotPassword", forgotPassword);
+router.put("/password/reset/:token", resetPassword);
+  
 
 export default router;

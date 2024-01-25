@@ -24,7 +24,7 @@ export const createProduct = async (req,res,next) => {
 
 export const getAllProducts = async (req,res) => {
    try {
-      const { name } = req.body
+      // const { name } = req.body
       // const { name } = req.query;
       // const queryObject = {};
 
@@ -32,7 +32,7 @@ export const getAllProducts = async (req,res) => {
       //    queryObject.name = { $regex: name, $options: "i" };
       // }
      const products = await Product.find({
-      name: { $regex: name, $options: "i" },
+      // name: { $regex: name, $options: "i" },
      });
   
 
