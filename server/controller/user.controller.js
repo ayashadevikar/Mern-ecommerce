@@ -1,7 +1,7 @@
 import User from "../models/user.schema.js";
 import { sendToken  } from "../utils/jwtToken.js"; 
 import CustomError from "../utils/CustomError.js";
-import sendEmail from "../utils/sendEmail.js";
+import { sendEmail } from "../utils/sendEmail.js";
 
 export const registerUser = async (req,res,next) => {
   try {
@@ -101,7 +101,7 @@ export const logout = async (req, res, next) => {
 }
 
 // Forgot Password
-exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
+export const forgotPassword = async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
 
   if (!user) {
@@ -138,10 +138,10 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
 
     return next(new CustomError(error.message, 500));
   }
-});
+};
 
 // Reset Password
-exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
+export const resetPassword = async (req, res, next) => {
   // creating token hash
   const resetPasswordToken = crypto
     .createHash("sha256")
@@ -173,4 +173,197 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
   await user.save();
 
   sendToken(user, 200, res);
+};
+
+// Get User Detail
+
+export const getUserDetails = async(req, res, next) => {
+   try {
+       
+         const user =  await User.findById(req.user.id);
+    
+    
+      res.status(200).json({
+      sucess: true,
+      user,
+    });
+
+   } catch (error) {
+     console.log(error);
+     res.status(400).json({
+     success: false,
+     message: error.message,
+  });
+}
+
+
+}
+
+// Update User Password
+
+export const updatePassword = async(req, res, next) => {
+   try {
+     
+        const user = await User.findById(req.user.id).select("+password");
+
+        const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
+
+        if (!isPasswordMatched) {
+          return next(new CustomError("Old password is incorrect", 400))
+        }
+
+        if(req.body.newPassword !==req.body.confirmPassword) {
+          return next(new CustomError("Password does not match", 400));
+        }
+
+        user.password = req.body.newPassword;
+
+        await user.save();
+
+        res.status(200).json({
+          sucess: true,
+          user,
+   });
+   }
+   catch (error) {
+    console.log(error);
+    res.status(400).json({
+    success: false,
+    message: error.message,
+ });
+}
+   }
+
+   // Update User Profile
+
+export const updateProfile = async(req, res, next) => {
+  try {
+    
+       const newUserData = {
+          name: req.body.name,
+          email: req.body.email,
+       }
+
+       const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+           new: true,
+           runValidators: true,
+           useFindAndModify: false,
+       })
+
+       res.status(200).json({
+         sucess: true,
+         
+  });
+  }
+  catch (error) {
+   console.log(error);
+   res.status(400).json({
+   success: false,
+   message: error.message,
 });
+}
+  }
+
+  // Get all users(admin)
+  export const getAllUser = async(req, res, next) => {
+    try {
+       
+      const users = await User.find();
+
+      res.status(200).json({
+        sucess: true,
+        users,
+      })
+
+    } catch (error) {
+      console.log(error);
+      res.status(400).json({
+      success: false,
+      message: error.message,
+     });
+    }
+  }
+
+  // Get single user (admin)
+export const getSingleUser = async(req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if(!user){
+      return next(new CustomError(`User does not exist with Id: ${req.params.id}`))
+    }
+
+    res.status(200).json({
+      sucess: true,
+      user,
+    })
+
+  } catch (error) {
+    console.log(error);
+      res.status(400).json({
+      success: false,
+      message: error.message,
+    })
+}  
+
+
+}
+
+ // Update User Role-- Admin
+
+ export const updateUserRole = async(req, res, next) => {
+  try {
+    
+       const newUserData = {
+          name: req.body.name,
+          email: req.body.email,
+          role: req.body.role
+       }
+
+       const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
+           new: true,
+           runValidators: true,
+           useFindAndModify: false,
+       })
+
+       res.status(200).json({
+         sucess: true,
+         
+  });
+  }
+  catch (error) {
+   console.log(error);
+   res.status(400).json({
+   success: false,
+   message: error.message,
+});
+}
+  }
+
+  // Delete User -- Admin
+
+ export const deleteUser = async(req, res, next) => {
+  try {
+    
+          const user = await User.findById(req.params.id);
+
+          if(!user){
+              return next(new CustomError(`User does not exist with Id: ${req.params.id}`))
+          }
+             
+          await user.remove();
+
+          res.status(200).json({
+            sucess: true,
+            message: "User Deleted Successfully"
+            
+     });
+    }
+  catch (error) {
+   console.log(error);
+   res.status(400).json({
+   success: false,
+   message: error.message,
+});
+}
+  }

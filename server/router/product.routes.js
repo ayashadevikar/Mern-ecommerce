@@ -7,9 +7,11 @@ import {
      getAllProducts,
      updateProduct,
      deleteProduct,
-     getProductDetails 
- 
-    // getUsersById
+     getProductDetails,
+     createProductReview,
+     getProductReviews,
+     deleteReview
+
   } from "../controller/product.controller.js";
   
   import { isAuthenticatedUser, authorizeRoles } from "../middleware/auth.js";
@@ -20,5 +22,8 @@ import {
   router.get("/getProductDetails/:id", getProductDetails)
   router.put("/updateProduct/:id", isAuthenticatedUser,   authorizeRoles("admin"), updateProduct );
   router.delete("/deleteProduct/:id", isAuthenticatedUser,  authorizeRoles("admin"), deleteProduct);
+  router.put("/createProductReview", isAuthenticatedUser,   createProductReview);
+  router.get("/getProductReviews", getProductReviews)
+  router.delete("/deleteReview", isAuthenticatedUser,  deleteReview);
   
   export default router;

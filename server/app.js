@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import dbConnection from './config/dbConnection.js'
 import userRouter from './router/user.routes.js'
 import productRouter from './router/product.routes.js';
+import orderRouter from './router/orderRoute.js';
 import cookieParser from 'cookie-parser';
 // import cors from "cors"
 
@@ -25,6 +26,7 @@ app.use(express.urlencoded({ extended: true}));
 
 app.use('/', userRouter)
 app.use('/', productRouter )
+app.use('/', orderRouter )
 
 
 
