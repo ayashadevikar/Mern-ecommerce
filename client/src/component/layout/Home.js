@@ -1,6 +1,7 @@
 import React from 'react';
 // import { Mouse } from "react-icons";
 import Product from './Product.js';
+import MetaData from './MetaData.js';
 
 const product = {
      name: "Blue TShirt",
@@ -12,6 +13,8 @@ const product = {
 const Home = () => {
   return (
     <>
+
+<MetaData title="ECOMMERCE" />
         <div className="banner flex flex-col gap-y-8 justify-center items-center h-[100vmin] text-white bg-gradient-to-r from-cyan-500 to-blue-500">
             <p className="text-xl">Welcome to Ecommerce</p>
             <h1 className="text-2xl font-bold">FIND AMAZING PRODUCTS BELOW</h1>
